@@ -1,0 +1,17 @@
+{
+  "name": "flexcommander-js",
+  "version": "0.0.1",
+  "description": "Js CLI for flexcommander-lib",
+  "main": "index.js",
+  "scripts": {
+    "start": "node flexcommander.js",
+    "build": "cmake-js -O ./build -d ./native compile"
+  },
+  "author": "rbetik12",
+  "license": "ISC",
+  "dependencies": {
+    "bindings": "^1.5.0",
+    "cmake-js": "^6.1.0",
+    "node-addon-api": "^3.1.0"
+  }
+}
