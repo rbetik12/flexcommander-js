@@ -1,14 +1,5 @@
-#include <Lib.h>
 #include <napi.h>
 #include <Flexcommander.h>
-
-char* Hello(const char* name) {
-    FlexCommanderProbeInfo info;
-    Init(&info);
-    ProbeDevices(&info);
-    IterateDevices(&info);
-    return "Yes.\n";
-}
 
 static FlexCommanderProbeInfo probeInfo;
 

@@ -7,10 +7,10 @@ add_subdirectory(flexcommander-lib)
 
 include_directories(${CMAKE_JS_INC})
 include_directories(flexcommander-lib/include)
-include_directories(include)
+include_directories(src/include)
 include_directories(../node_modules/node-addon-api)
 include_directories(/usr/include/node)
 
-add_library(${CMAKE_PROJECT_NAME} SHARED src/Lib.cpp include/Lib.h)
+add_library(${CMAKE_PROJECT_NAME} SHARED src/Lib.cpp src/include/Utils-Internal.h src/utils/Utils.c src/include/Defines-Internal.h)
 set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX ".node")
 target_link_libraries(${CMAKE_PROJECT_NAME} flexcommander-lib)
