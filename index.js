@@ -3,3 +3,7 @@ exports.Init = flexNative.FlexInit;
 exports.ProbeDevices = flexNative.FlexProbeDevices;
 exports.IterateDevices = flexNative.FlexIterateDevices;
 exports.FlexOpen = flexNative.FlexOpen;
+exports.FlexInitFs = flexNative.FlexInitFs;
+exports.FlexProcessInput = flexNative.FlexProcessInput;
+exports.FlexPrintCurrentDir = flexNative.FlexPrintCurrentDir;
+exports.FlexClose = flexNative.FlexClose;
