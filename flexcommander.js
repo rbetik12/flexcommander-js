@@ -12,6 +12,9 @@ if (process.argv[2] == '-l') {
     flex.ProbeDevices();
     flex.IterateDevices();
 }
+else if (process.argv[2] == "-i" && process.argv.length >= 4) {
+    console.log(flex.FlexOpen(process.argv[3]));
+}
 else {
     console.log("Unknown option!");
     process.exit(1);
