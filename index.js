@@ -1,5 +1,4 @@
 const flexNative = require('bindings')('flexcommander-native');
-exports.Hello = flexNative._Hello;
-exports.FlexInit = flexNative.FlexInit;
-exports.FlexProbeDevices = flexNative.FlexProbeDevices;
-exports.FlexIterateDevices = flexNative.FlexIterateDevices;
+exports.Init = flexNative.FlexInit;
+exports.ProbeDevices = flexNative.FlexProbeDevices;
+exports.IterateDevices = flexNative.FlexIterateDevices;

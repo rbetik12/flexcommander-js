@@ -1,6 +1,5 @@
 const flex = require(".")
-console.log(flex.Hello("Nigga"))
+flex.Init();
+flex.ProbeDevices();
+flex.IterateDevices();
 
-flex.FlexInit();
-flex.FlexProbeDevices();
-flex.FlexIterateDevices();
