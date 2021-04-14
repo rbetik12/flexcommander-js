@@ -34,8 +34,10 @@ Napi::Number FlexProbeDevices(const Napi::CallbackInfo &info) {
     return Napi::Number::New(info.Env(), ProbeDevices(&probeInfo));
 }
 
-Napi::Number FlexIterateDevices(const Napi::CallbackInfo &info) {
-    return Napi::Number::New(info.Env(), IterateDevices(&probeInfo));
+Napi::String FlexIterateDevices(const Napi::CallbackInfo &info) {
+    PathListNode* list = IterateDevices(&probeInfo);
+    Napi::String outputStr = ConstructOutputString(list, info.Env());
+    return outputStr;
 }
 
 Napi::Number _FlexOpen(const Napi::CallbackInfo &info) {

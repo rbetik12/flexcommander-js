@@ -11,7 +11,8 @@ if (process.argv.length < 3) {
 if (process.argv[2] == '-l') {
     flex.Init();
     flex.ProbeDevices();
-    flex.IterateDevices();
+    let res = flex.IterateDevices();
+    console.log(res);
 }
 else if (process.argv[2] == "-i" && process.argv.length >= 4) {
     if (flex.FlexOpen(process.argv[3])) {
