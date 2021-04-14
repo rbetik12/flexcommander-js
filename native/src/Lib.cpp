@@ -2,12 +2,29 @@
 #include <Flexcommander.h>
 #include <Defines-Internal.h>
 #include <Utils-Internal.h>
+#include "../flexcommander-lib/src/include/List.h"
+#include <string.h>
 
 static FlexCommanderProbeInfo probeInfo;
 static FlexCommanderFS fs;
 static char *currentDir = NULL;
 static char *str = NULL;
 static bool isExit = false;
+
+#define OUTPUT_BUFFER_SIZE 16384
+
+Napi::String ConstructOutputString(PathListNode* listHead, const Napi::Env& env) {
+    PathListNode * list = listHead;
+    char* output = (char*) calloc(OUTPUT_BUFFER_SIZE, sizeof(char));
+
+    while (list != NULL) {
+        strncat(output, list->token, strlen(list->token));
+        list = list->next;
+    }
+    Napi::String outputStr = Napi::String::New(env, output);
+    free(output);
+    return outputStr;
+}
 
 Napi::Number FlexInit(const Napi::CallbackInfo &info) {
     return Napi::Number::New(info.Env(), Init(&probeInfo));
@@ -27,14 +44,18 @@ Napi::Number _FlexOpen(const Napi::CallbackInfo &info) {
 
 Napi::Number FlexInitFs(const Napi::CallbackInfo &info) {
     currentDir = (char *) calloc(CURRENT_DIR_STRING_LENGTH, sizeof(char));
-    str = (char*) calloc(COMMAND_MAX_LENGTH, sizeof(char));
+    str = (char *) calloc(COMMAND_MAX_LENGTH, sizeof(char));
     currentDir[0] = '/';
     return Napi::Number::New(info.Env(), 0);
 }
 
 void FlexClose(const Napi::CallbackInfo &info) {
-    free(currentDir);
-    free(str);
+    if (str) {
+        free(str);
+    }
+    if (currentDir) {
+        free(currentDir);
+    }
 }
 
 void FlexPrintCurrentDir(const Napi::CallbackInfo &info) {
@@ -44,39 +65,40 @@ void FlexPrintCurrentDir(const Napi::CallbackInfo &info) {
     fflush(stdout);
 }
 
-Napi::Number FlexProcessInput(const Napi::CallbackInfo &info) {
+Napi::String FlexProcessInput(const Napi::CallbackInfo &info) {
     memset(str, 0, COMMAND_MAX_LENGTH);
     memcpy(str, info[0].ToString().Utf8Value().c_str(), info[0].ToString().Utf8Value().length());
 
     if (strcmp("exit", str) == 0) {
-        printf("Bye!\n");
-        return Napi::Number::New(info.Env(), 2);
+        return Napi::String::New(info.Env(), "Bye!\n");
+    }
+
+    if (str[0] == 'p' && str[1] == 'w' && str[2] == 'd') {
+        return Napi::String::New(info.Env(), currentDir);
     }
 
     if (ParseRelativePath(str + 3, currentDir)) {
-        fputs("Incorrect path\n", stderr);
-        return Napi::Number::New(info.Env(), 1);
+        return Napi::String::New(info.Env(), "Incorrect path!\n");
     }
 
     if (str[0] == 'l' && str[1] == 's') {
         FlexListDirContent(str + 3, &fs);
-        return Napi::Number::New(info.Env(), 0);
-    } else if (str[0] == 'c' && str[1] == 'd') {
+        Napi::String output = ConstructOutputString(fs.output, info.Env());
+        return output;
+    }
+    else if (str[0] == 'c' && str[1] == 'd') {
         if (FlexSetCurrentDir(str + 3, &fs)) {
-            fprintf(stderr, "Path doesn't exist!\n");
-            return Napi::Number::New(info.Env(), 1);
+            return Napi::String::New(info.Env(), "Path doesn't exist!\n");
         } else {
             memset(currentDir, 0, CURRENT_DIR_STRING_LENGTH);
             memcpy(currentDir, str + 3, CURRENT_DIR_STRING_LENGTH - 3);
-            return Napi::Number::New(info.Env(), 0);
+            return Napi::String::New(info.Env(), "");
         }
     } else if (str[0] == 'c' && str[1] == 'p') {
         FlexCopy(str + 3, currentDir, &fs);
-        return Napi::Number::New(info.Env(), 0);
-    }
-    else {
-        printf("Unknown command!\n");
-        return Napi::Number::New(info.Env(), 1);
+        return Napi::String::New(info.Env(), "");
+    } else {
+        return Napi::String::New(info.Env(), "Unknown command!\n");
     }
 }
 
@@ -119,7 +141,7 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
     exports.Set(
             Napi::String::New(env, "FlexClose"),
             Napi::Function::New(env, FlexClose)
-            );
+    );
 
     return exports;
 }

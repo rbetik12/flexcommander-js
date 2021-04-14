@@ -23,9 +23,8 @@ else if (process.argv[2] == "-i" && process.argv.length >= 4) {
         flex.FlexPrintCurrentDir();
         let str = readline.question("");
         let res = flex.FlexProcessInput(str);
-        if (res === 2) {
-            break;
-        }
+        console.log(res);
+        if (res === "Bye!\n") break;
     }
     flex.FlexClose();
 }
